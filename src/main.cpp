@@ -33,6 +33,11 @@ void setup() {
   ledcAttachPin(PIN_GUNDAM_EYE, CH_GUNDAM_EYE);
   GUNDAM_EYE_TURN_OFF();
 
+  ESP_LOGI(MAIN_TAG, "Setup Gundam Gatling");
+  ledcSetup(CH_GUNDAM_GATLING, 1000, 8);
+  ledcAttachPin(PIN_GUNDAM_GATLING, CH_GUNDAM_GATLING);
+  ledcWrite(CH_GUNDAM_GATLING, 0);
+
   // Neck
   ESP_LOGI(MAIN_TAG, "Setup Neck Servo motor");
   neckServo.attach(PIN_NECK_SERVO);
@@ -87,6 +92,14 @@ void loop() {
   GUNDAM_EYE_EMPHASIZE();
   playGatling();
   delay(500);
+  for (auto i = 0; i < 5; i++) {
+    GUNDAM_GATLING_TURN_ON();
+    delay(100);
+    GUNDAM_GATLING_TURN_OFF();
+    delay(100);
+  }
+  delay(300);
+  stopGatling();
   GUNDAM_EYE_TURN_ON();
 
   ESP_LOGD(MAIN_TAG, "Wait 2 seconds...");
