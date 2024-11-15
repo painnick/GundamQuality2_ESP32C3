@@ -10,5 +10,6 @@
 const int PIN_STEP_MOTOR_STEP = 3;
 const int PIN_STEP_MOTOR_ENABLE = 4;
 const int PIN_HALL_SENSOR = 5;
+const int PIN_NECK_SERVO = 6;
 
 #endif //GUNDAMQUALITY2_ESP32C3_SRC_COMMON_H_

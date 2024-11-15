@@ -1,8 +1,14 @@
 #include <Arduino.h>
 
+#include <ESP32Servo.h>
 #include "common.h"
 
 #define MAIN_TAG "Main"
+
+Servo neckServo;
+
+#define NECK_ANGLE_START 90
+#define NECK_ANGLE_LEFT 150
 
 const int steps_per_rev = 2048 /* 200 */;
 
@@ -15,6 +21,10 @@ void IRAM_ATTR InitPos() {
 
 void setup() {
   ESP_LOGI(MAIN_TAG, "Start!");
+
+  neckServo.attach(PIN_NECK_SERVO);
+  neckServo.write(NECK_ANGLE_START);
+
   pinMode(PIN_STEP_MOTOR_STEP, OUTPUT);
   pinMode(PIN_STEP_MOTOR_ENABLE, OUTPUT);
 
@@ -44,6 +54,24 @@ void loop() {
     delayMicroseconds(800);
   }
   digitalWrite(PIN_STEP_MOTOR_ENABLE, HIGH);
+
+
+  ESP_LOGD(MAIN_TAG, "Face Left");
+  for (auto i = NECK_ANGLE_START; i <= NECK_ANGLE_LEFT; i += 5) {
+    neckServo.write(i);
+    delay(50);
+  }
+  neckServo.write(NECK_ANGLE_LEFT);
+
+  ESP_LOGD(MAIN_TAG, "Wait 2 seconds...");
+  delay(2000);
+
+  ESP_LOGD(MAIN_TAG, "Face Front");
+  for (auto i = NECK_ANGLE_LEFT; i >= NECK_ANGLE_START; i -= 5) {
+    neckServo.write(i);
+    delay(50);
+  }
+  neckServo.write(NECK_ANGLE_START);
 
   ESP_LOGD(MAIN_TAG, "Wait 3 seconds...");
   delay(1000 * 3);
