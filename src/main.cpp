@@ -7,11 +7,6 @@
 
 Servo neckServo;
 
-#define NECK_ANGLE_START 90
-#define NECK_ANGLE_LEFT 150
-
-const int steps_per_rev = 2048 /* 200 */;
-
 volatile bool initialized = false;
 
 void IRAM_ATTR InitPos() {
@@ -47,7 +42,7 @@ void setup() {
 
 void loop() {
   digitalWrite(PIN_STEP_MOTOR_ENABLE, LOW);
-  for (int i = 0; i < steps_per_rev; i++) {
+  for (int i = 0; i < STEPS_PER_REV; i++) {
     digitalWrite(PIN_STEP_MOTOR_STEP, HIGH);
     delayMicroseconds(800);
     digitalWrite(PIN_STEP_MOTOR_STEP, LOW);

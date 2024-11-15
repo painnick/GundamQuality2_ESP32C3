@@ -7,9 +7,14 @@
 
 #include "esp_log.h"
 
-const int PIN_STEP_MOTOR_STEP = 3;
-const int PIN_STEP_MOTOR_ENABLE = 4;
-const int PIN_HALL_SENSOR = 5;
-const int PIN_NECK_SERVO = 6;
+#define PIN_STEP_MOTOR_STEP 3
+#define PIN_STEP_MOTOR_ENABLE 4
+#define PIN_HALL_SENSOR 5
+#define PIN_NECK_SERVO 6
+
+#define STEPS_PER_REV 2048
+
+#define NECK_ANGLE_START 90
+#define NECK_ANGLE_LEFT 150
 
 #endif //GUNDAMQUALITY2_ESP32C3_SRC_COMMON_H_
