@@ -9,7 +9,7 @@ const int steps_per_rev = 2048 /* 200 */;
 volatile bool initialized = false;
 
 void IRAM_ATTR InitPos() {
-  Serial.println("Catch!");
+  ESP_LOGD(MAIN_TAG, "Catch!");
   initialized = true;
 }
 
