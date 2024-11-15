@@ -13,6 +13,9 @@
 #define PIN_NECK_SERVO 6
 #define PIN_GUNDAM_EYE 7
 
+#define PIN_MP3_TX 21
+#define PIN_MP3_RX 20
+
 #define CH_GUNDAM_EYE 5
 
 #define STEPS_PER_REV 2048
