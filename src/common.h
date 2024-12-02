@@ -13,12 +13,14 @@
 #define PIN_NECK_SERVO 6
 #define PIN_GUNDAM_EYE 7
 #define PIN_GUNDAM_GATLING 9
+#define PIN_BEAM 10
 
 #define PIN_MP3_TX 20
 #define PIN_MP3_RX 21
 
 #define CH_GUNDAM_EYE 5
 #define CH_GUNDAM_GATLING 4
+#define CH_BEAM 3
 
 #define STEPS_PER_REV 2048
 
@@ -29,6 +31,9 @@
 #define GUNDAM_EYE_TURN_ON() (ledcWrite(CH_GUNDAM_EYE, 95))
 #define GUNDAM_EYE_EMPHASIZE() (ledcWrite(CH_GUNDAM_EYE, 191))
 #define GUNDAM_EYE_TURN_OFF() (ledcWrite(CH_GUNDAM_EYE, 0))
+
+#define BEAM_TURN_ON() (ledcWrite(CH_BEAM, 95))
+#define BEAM_TURN_OFF() (ledcWrite(CH_BEAM, 0))
 
 #define GUNDAM_GATLING_TURN_ON() (ledcWrite(CH_GUNDAM_GATLING, 127))
 #define GUNDAM_GATLING_TURN_OFF() (ledcWrite(CH_GUNDAM_GATLING, 0))

@@ -33,6 +33,11 @@ void setup() {
   ledcAttachPin(PIN_GUNDAM_EYE, CH_GUNDAM_EYE);
   GUNDAM_EYE_TURN_OFF();
 
+  ESP_LOGI(MAIN_TAG, "Setup Beam");
+  ledcSetup(CH_BEAM, 1000, 8);
+  ledcAttachPin(PIN_BEAM, CH_BEAM);
+  BEAM_TURN_OFF();
+
   ESP_LOGI(MAIN_TAG, "Setup Gundam Gatling");
   ledcSetup(CH_GUNDAM_GATLING, 1000, 8);
   ledcAttachPin(PIN_GUNDAM_GATLING, CH_GUNDAM_GATLING);
@@ -103,7 +108,9 @@ void loop() {
   GUNDAM_EYE_TURN_ON();
 
   ESP_LOGD(MAIN_TAG, "Wait 2 seconds...");
+  BEAM_TURN_ON();
   delay(2000);
+  BEAM_TURN_OFF();
 
   ESP_LOGD(MAIN_TAG, "Face Front");
   for (auto i = NECK_ANGLE_LEFT; i >= NECK_ANGLE_START; i -= 5) {
