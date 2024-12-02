@@ -14,9 +14,8 @@
 #define PIN_GUNDAM_EYE 7
 #define PIN_GUNDAM_GATLING 9
 
-
-#define PIN_MP3_TX 21
-#define PIN_MP3_RX 20
+#define PIN_MP3_TX 20
+#define PIN_MP3_RX 21
 
 #define CH_GUNDAM_EYE 5
 #define CH_GUNDAM_GATLING 4
