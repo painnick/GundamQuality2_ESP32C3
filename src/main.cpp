@@ -64,6 +64,15 @@ void setup() {
     digitalWrite(PIN_STEP_MOTOR_STEP, LOW);
     delayMicroseconds(1000);
   }
+
+  // More 15 degree
+  for (int i = 0; i < STEPS_PER_REV * 15 / 360; i++) {
+    digitalWrite(PIN_STEP_MOTOR_STEP, HIGH);
+    delayMicroseconds(800);
+    digitalWrite(PIN_STEP_MOTOR_STEP, LOW);
+    delayMicroseconds(800);
+  }
+
   digitalWrite(PIN_STEP_MOTOR_ENABLE, HIGH);
   ESP_LOGI(MAIN_TAG, "Found starting point!");
 
