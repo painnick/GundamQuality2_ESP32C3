@@ -22,7 +22,7 @@
 #define CH_GUNDAM_GATLING 4
 #define CH_BEAM 3
 
-#define STEPS_PER_REV 2048
+#define STEPS_PER_REV 2048 * 40 / 29
 
 #define NECK_ANGLE_START 90
 #define NECK_ANGLE_LEFT 150
