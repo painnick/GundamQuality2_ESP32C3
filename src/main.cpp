@@ -9,9 +9,14 @@
 
 void runMs(uint32_t delayUs = 800);
 
+void shakingHeadWithSound(int center = NECK_ANGLE_START, int min = NECK_ANGLE_SHAKE1,
+                          int max = NECK_ANGLE_SHAKE2, int step = 5, int delayMs = 30);
+
 void adjustPosition();
 
 void scene1();
+
+void sceneYareYare();
 
 Servo neckServo;
 
@@ -30,7 +35,6 @@ void setup() {
   delay(1000);
   setDefaultVolume();
 
-  playOpening();
   delay(4000);
 
   // LEDs
@@ -61,30 +65,27 @@ void setup() {
 
   gpio_set_direction((gpio_num_t) PIN_HALL_SENSOR, GPIO_MODE_INPUT);
   attachInterrupt(PIN_HALL_SENSOR, InitPos, RISING);
-
   ESP_LOGI(MAIN_TAG, "Find starting position...");
   adjustPosition();
 
   ESP_LOGD(MAIN_TAG, "Wait 3 seconds...");
   delay(1000 * 3);
 
-  {
-    GUNDAM_EYE_TURN_ON();
+  GUNDAM_EYE_TURN_ON();
 
-    // Rotate the body
-    START_MOTOR();
-    for (int i = 0; i < STEPS_PER_REV; i++) {
-      runMs();
-    }
-    STOP_MOTOR();
-  }
+  randomSeed(millis());
 }
 
+constexpr auto loopCount = 4;
 int sceneNo = 0;
 
 void loop() {
   if (sceneNo == 0) {
-    scene1();
+    if (random(3) % 3 != 0) {
+      scene1();
+    } else {
+      sceneYareYare();
+    }
   } else if (sceneNo == 1) {
     ESP_LOGI(MAIN_TAG, "Find starting position...");
     adjustPosition();
@@ -96,7 +97,7 @@ void loop() {
     STOP_MOTOR();
   }
 
-  sceneNo = (++sceneNo) % 4;
+  sceneNo = (++sceneNo) % loopCount;
 }
 
 void adjustPosition() {
@@ -110,6 +111,9 @@ void adjustPosition() {
     runMs();
   }
   STOP_MOTOR();
+
+  playOpening();
+  delay(1000);
 }
 
 void scene1() {
@@ -164,9 +168,64 @@ void scene1() {
   delay(1000);
 }
 
+void sceneYareYare() {
+  delay(1000);
+
+  // Bean On
+  BEAM_TURN_ON();
+  delay(1000);
+
+  // Face Left
+  for (auto i = NECK_ANGLE_START; i <= NECK_ANGLE_LEFT; i += 4) {
+    neckServo.write(i);
+    delay(50);
+  }
+  neckServo.write(NECK_ANGLE_LEFT);
+  delay(2000);
+
+  // Face Front
+  for (auto i = NECK_ANGLE_LEFT; i >= NECK_ANGLE_START; i -= 8) {
+    neckServo.write(i);
+    delay(50);
+  }
+  neckServo.write(NECK_ANGLE_START);
+
+  // Wait...
+  delay(1000);
+
+  shakingHeadWithSound();
+  delay(2000);
+
+  // Bean Off
+  BEAM_TURN_OFF();
+
+  //  Wait...
+  delay(1000);
+}
+
 void runMs(uint32_t delayUs) {
   digitalWrite(PIN_STEP_MOTOR_STEP, HIGH);
   delayMicroseconds(delayUs);
   digitalWrite(PIN_STEP_MOTOR_STEP, LOW);
   delayMicroseconds(delayUs);
+}
+
+void shakingHeadWithSound(const int center, const int min,
+                          const int max, const int step, const int delayMs) {
+  for (auto i = center; i >= min; i -= step) {
+    neckServo.write(i);
+    delay(delayMs);
+  }
+
+  for (auto i = min; i <= max; i += step) {
+    neckServo.write(i);
+    delay(delayMs);
+  }
+
+  playYareYare();
+
+  for (auto i = max; i >= center; i -= step) {
+    neckServo.write(i);
+    delay(delayMs);
+  }
 }
