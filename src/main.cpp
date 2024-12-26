@@ -117,8 +117,6 @@ void adjustPosition() {
 }
 
 void scene1() {
-  delay(1000);
-
   // Bean On
   BEAM_TURN_ON();
   delay(1000);
@@ -169,8 +167,6 @@ void scene1() {
 }
 
 void sceneYareYare() {
-  delay(1000);
-
   // Bean On
   BEAM_TURN_ON();
   delay(1000);
