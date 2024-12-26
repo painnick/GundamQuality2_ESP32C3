@@ -7,6 +7,12 @@
 #define MAIN_TAG "Main"
 #define DEBUG
 
+void runMs(uint32_t delayUs = 800);
+
+void adjustPosition();
+
+void scene1();
+
 Servo neckServo;
 
 volatile bool initialized = false;
@@ -56,54 +62,76 @@ void setup() {
   gpio_set_direction((gpio_num_t) PIN_HALL_SENSOR, GPIO_MODE_INPUT);
   attachInterrupt(PIN_HALL_SENSOR, InitPos, RISING);
 
-  ESP_LOGI(MAIN_TAG, "Find starting point...");
-  digitalWrite(PIN_STEP_MOTOR_ENABLE, LOW);
-  while (!initialized) {
-    digitalWrite(PIN_STEP_MOTOR_STEP, HIGH);
-    delayMicroseconds(1000);
-    digitalWrite(PIN_STEP_MOTOR_STEP, LOW);
-    delayMicroseconds(1000);
-  }
-
-  // More 15 degree
-  for (int i = 0; i < STEPS_PER_REV * 15 / 360; i++) {
-    digitalWrite(PIN_STEP_MOTOR_STEP, HIGH);
-    delayMicroseconds(800);
-    digitalWrite(PIN_STEP_MOTOR_STEP, LOW);
-    delayMicroseconds(800);
-  }
-
-  digitalWrite(PIN_STEP_MOTOR_ENABLE, HIGH);
-  ESP_LOGI(MAIN_TAG, "Found starting point!");
+  ESP_LOGI(MAIN_TAG, "Find starting position...");
+  adjustPosition();
 
   ESP_LOGD(MAIN_TAG, "Wait 3 seconds...");
   delay(1000 * 3);
+
+  {
+    GUNDAM_EYE_TURN_ON();
+
+    // Rotate the body
+    START_MOTOR();
+    for (int i = 0; i < STEPS_PER_REV; i++) {
+      runMs();
+    }
+    STOP_MOTOR();
+  }
 }
 
+int sceneNo = 0;
+
 void loop() {
-  GUNDAM_EYE_TURN_ON();
-
-  // Take a turn and get to the starting point.
-  digitalWrite(PIN_STEP_MOTOR_ENABLE, LOW);
-  for (int i = 0; i < STEPS_PER_REV; i++) {
-    digitalWrite(PIN_STEP_MOTOR_STEP, HIGH);
-    delayMicroseconds(800);
-    digitalWrite(PIN_STEP_MOTOR_STEP, LOW);
-    delayMicroseconds(800);
+  if (sceneNo == 0) {
+    scene1();
+  } else if (sceneNo == 1) {
+    ESP_LOGI(MAIN_TAG, "Find starting position...");
+    adjustPosition();
+  } else {
+    START_MOTOR();
+    for (int i = 0; i < STEPS_PER_REV; i++) {
+      runMs();
+    }
+    STOP_MOTOR();
   }
-  digitalWrite(PIN_STEP_MOTOR_ENABLE, HIGH);
 
-  ESP_LOGD(MAIN_TAG, "Face Left");
+  sceneNo = (++sceneNo) % 4;
+}
+
+void adjustPosition() {
+  initialized = false;
+  START_MOTOR();
+  while (!initialized) {
+    runMs(1000);
+  }
+  // More 15 degree
+  for (int i = 0; i < STEPS_PER_REV * 15 / 360; i++) {
+    runMs();
+  }
+  STOP_MOTOR();
+}
+
+void scene1() {
+  delay(1000);
+
+  // Bean On
+  BEAM_TURN_ON();
+  delay(1000);
+
+  // Face Left
   for (auto i = NECK_ANGLE_START; i <= NECK_ANGLE_LEFT; i += 5) {
     neckServo.write(i);
     delay(50);
   }
   neckServo.write(NECK_ANGLE_LEFT);
 
-  ESP_LOGD(MAIN_TAG, "Wait 2 seconds...");
-  delay(2000);
+  // Wait...
+  delay(1000);
 
+  // Gatling
   GUNDAM_EYE_EMPHASIZE();
+  delay(800);
   playGatling();
   delay(500);
   for (auto i = 0; i < 5; i++) {
@@ -116,18 +144,29 @@ void loop() {
   stopGatling();
   GUNDAM_EYE_TURN_ON();
 
-  ESP_LOGD(MAIN_TAG, "Wait 2 seconds...");
-  BEAM_TURN_ON();
-  delay(2000);
-  BEAM_TURN_OFF();
+  //  Wait...
+  delay(1000);
 
-  ESP_LOGD(MAIN_TAG, "Face Front");
+  // Face Front
   for (auto i = NECK_ANGLE_LEFT; i >= NECK_ANGLE_START; i -= 5) {
     neckServo.write(i);
     delay(50);
   }
   neckServo.write(NECK_ANGLE_START);
 
-  ESP_LOGD(MAIN_TAG, "Wait 3 seconds...");
-  delay(1000 * 3);
+  //  Wait...
+  delay(1000);
+
+  // Bean Off
+  BEAM_TURN_OFF();
+
+  //  Wait...
+  delay(1000);
+}
+
+void runMs(uint32_t delayUs) {
+  digitalWrite(PIN_STEP_MOTOR_STEP, HIGH);
+  delayMicroseconds(delayUs);
+  digitalWrite(PIN_STEP_MOTOR_STEP, LOW);
+  delayMicroseconds(delayUs);
 }
