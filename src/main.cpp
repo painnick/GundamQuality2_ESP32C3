@@ -68,8 +68,10 @@ void setup() {
   ESP_LOGI(MAIN_TAG, "Find starting position...");
   adjustPosition();
 
-  ESP_LOGD(MAIN_TAG, "Wait 3 seconds...");
-  delay(1000 * 3);
+  playOpening();
+
+  ESP_LOGD(MAIN_TAG, "Wait 5 seconds...");
+  delay(1000 * 5);
 
   GUNDAM_EYE_TURN_ON();
 
@@ -81,7 +83,7 @@ int sceneNo = 0;
 
 void loop() {
   if (sceneNo == 0) {
-    if (random(3) % 3 != 0) {
+    if (random(2) % 2 != 0) {
       scene1();
     } else {
       sceneYareYare();
@@ -112,7 +114,6 @@ void adjustPosition() {
   }
   STOP_MOTOR();
 
-  playOpening();
   delay(1000);
 }
 
